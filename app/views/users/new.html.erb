@@ -1,0 +1,17 @@
+<h1>新規ユーザー登録</h1>
+
+<%= form_with model: @user, url: users_path, local: true do |f| %>
+<p>
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+    <%= f.label :email %><br>
+    <%= f.email_field :email %>
+    <%= f.label :password %><br>
+    <%= f.password_field :password %>
+    <%= f.label :password_confirmation %><br>
+    <%= f.password_field :password_confirmation %>
+    <%= f.label :role %><br>
+    <%= f.select :role, User.roles.keys.map { |r| [r.humanize, r] } %>
+    <%= f.submit "登録" %>
+</p>
+<% end %>
