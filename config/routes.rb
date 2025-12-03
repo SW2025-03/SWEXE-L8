@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get "home", to: "home#index"
   
   resources :users, only: [:new, :create]
+  resources :events, only: [:new, :create]
   
   root "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

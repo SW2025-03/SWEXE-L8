@@ -2,6 +2,7 @@
 <h2>イベント一覧</h2>
 
 <% if logged_in? %>
+  <%= link_to "新規イベント作成", new_event_path, class: "btn btn-primary" %>
   <%= button_to "ログアウト", logout_path, method: :delete %>
 <% else %>
   <%= link_to "ログイン", login_path, class: "btn btn-success" %>
