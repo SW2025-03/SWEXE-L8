@@ -1,46 +1,42 @@
 class ParticipationsController < ApplicationController
-
-  def index
-    @event = Event.find(params[:event_id])
-    @participations = @event.participations
-  end
-
   def create
-    @event = Event.find(params[:event_id])
-
-    participation = Participation.new(
-      event_id: @event.id,
-      user_id: session[:user_id],
-      status: 0  
+    @participation = Participation.new(
+      user_id: current_user.id,
+      event_id: params[:event_id],
+      status: :favorite
     )
 
-    if participation.save
-      redirect_to @event, notice: "イベントに参加しました"
+    if @participation.save
+      redirect_back fallback_location: events_path, notice: "参加希望を送信しました"
     else
-      redirect_to @event, alert: "参加できませんでした"
+      redirect_back fallback_location: events_path, alert: "参加希望に失敗しました"
     end
   end
 
-  def destroy
-    @event = Event.find(params[:event_id])
-    participation = @event.participations.find_by(user_id: session[:user_id])
 
-    if participation
-      participation.destroy
-      redirect_to @event, notice: "参加をキャンセルしました"
-    else
-      redirect_to @event, alert: "参加情報がありません"
-    end
-  end
-
+  # ステータス変更（学生 or 主催者が使う）
   def update
-    @event = Event.find(params[:event_id])
-    participation = @event.participations.find(params[:id])
+    @participation = Participation.find(params[:id])
 
-    if participation.update(status: params[:status])
-      redirect_to event_participations_path(@event), notice: "ステータスを更新しました"
-    else
-      redirect_to event_participations_path(@event), alert: "更新に失敗しました"
+    # 学生は自分の分しか更新できない
+    unless @participation.user == current_user || current_user.admin?
+      redirect_back fallback_location: events_path, alert: "更新権限がありません"
+      return
     end
+
+    if @participation.update(status: params[:status])
+      redirect_back fallback_location: events_path, notice: "ステータスを更新しました"
+    else
+      redirect_back fallback_location: events_path, alert: "更新に失敗しました"
+    end
+  end
+
+
+  # キャンセル（学生が使う）
+  def destroy
+    @participation = Participation.find_by(user_id: current_user.id, event_id: params[:event_id])
+    @participation.destroy if @participation
+
+    redirect_back fallback_location: events_path, notice: "参加を取り消しました"
   end
 end

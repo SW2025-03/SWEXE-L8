@@ -1,0 +1,22 @@
+<h2>参加者一覧（主催者のみ）</h2>
+
+<% if current_user && (current_user.admin? || current_user.id == @event.creator_id) %>
+  <table border="1">
+    <tr>
+      <th>名前</th>
+      <th>ステータス</th>
+      <th>操作</th>
+    </tr>
+
+    <% @event.participations.each do |p| %>
+      <tr>
+        <td><%= p.user.name %></td>
+        <td><%= p.status %></td>
+        <td>
+          <%= button_to "確定", participation_path(p, status: :confirmed), method: :patch %>
+          <%= button_to "キャンセル", participation_path(p, status: :canceled), method: :patch %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

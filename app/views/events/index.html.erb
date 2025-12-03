@@ -1,0 +1,53 @@
+<h1>イベント一覧</h1>
+
+<!-- 検索フォーム -->
+<%= form_with url: events_path, method: :get, local: true do |f| %>
+  <p>
+    <%= label_tag :keyword, "キーワード" %><br>
+    <%= text_field_tag :keyword, params[:keyword] %>
+  </p>
+
+  <p>
+    <%= label_tag :category, "カテゴリ" %><br>
+    <%= select_tag :category,
+        options_for_select(Event.distinct.pluck(:category).compact, params[:category]),
+        include_blank: "指定なし" %>
+  </p>
+
+  <p>
+    <%= label_tag :start_date, "開始日（以降）" %><br>
+    <%= date_field_tag :start_date, params[:start_date] %>
+  </p>
+
+  <%= submit_tag "検索" %>
+<% end %>
+
+<hr>
+
+<!-- ログインユーザーのみ表示 -->
+<% if logged_in? %>
+  <p><%= link_to "新しいイベントを作成", new_event_path %></p>
+<% end %>
+
+<table border="1">
+  <tr>
+    <th>タイトル</th>
+    <th>日時</th>
+    <th>場所</th>
+    <th></th>
+  </tr>
+
+  <% @events.each do |event| %>
+    <tr>
+      <td><%= event.title %></td>
+      <td><%= event.start_datetime.strftime("%Y-%m-%d %H:%M") %></td>
+      <td><%= event.location %></td>
+      <td><%= link_to "詳細", event_path(event) %></td>
+    </tr>
+  <% end %>
+</table>
+
+<!-- イベントがない場合 -->
+<% if @events.empty? %>
+  <p>表示できるイベントはありません。</p>
+<% end %>

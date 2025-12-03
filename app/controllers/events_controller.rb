@@ -1,11 +1,28 @@
 class EventsController < ApplicationController
-
   def index
-    @events = Event.order(start_datetime: :asc)
+    @events = Event.where(is_public: true)
+    
+    if params[:keyword].present?
+      @events = @events.where("title LIKE ? OR description LIKE ?", "%#{params[:keyword]}%", "%#{params[:keyword]}%")
+    end
+
+    if params[:category].present?
+      @events = @events.where(category: params[:category])
+    end
+
+    if params[:start_date].present?
+      begin_date = Date.parse(params[:start_date])
+      @events = @events.where("start_datetime >= ?", begin_date.beginning_of_day)
+    end
+
+    @events = @events.order(start_datetime: :asc)
   end
 
   def show
-    @event = Event.find(params[:id])
+    @event = Event.find_by(id: params[:id])
+    unless @event
+      redirect_to events_path, alert: "指定されたイベントが見つかりません"
+    end
   end
 
   def new
@@ -13,56 +30,52 @@ class EventsController < ApplicationController
   end
 
   def create
-    @event = Event.new(
-      title: params[:event][:title],
-      description: params[:event][:description],
-      location: params[:event][:location],
-      start_datetime: params[:event][:start_datetime],
-      end_datetime: params[:event][:end_datetime],
-      capacity: params[:event][:capacity],
-      category: params[:event][:category],
-      organizer: params[:event][:organizer],
-      thumbnail_url: params[:event][:thumbnail_url],
-      is_public: params[:event][:is_public],
-      creator_id: params[:event][:creator_id]
-    )
+    @event = Event.new(event_params)
+    @event.creator_id = current_user.id
 
     if @event.save
       redirect_to @event, notice: "イベントを作成しました"
     else
-      render :new, status: :unprocessable_entity
+      render :new
     end
   end
 
   def edit
-    @event = Event.find(params[:id])
+    @event = Event.find_by(id: params[:id])
+    if @event.nil? || (@event.creator_id != current_user.id && !current_user.admin?)
+      redirect_to events_path, alert: "編集権限がありません"
+    end
   end
 
   def update
-    @event = Event.find(params[:id])
-
-    if @event.update(
-      title: params[:event][:title],
-      description: params[:event][:description],
-      location: params[:event][:location],
-      start_datetime: params[:event][:start_datetime],
-      end_datetime: params[:event][:end_datetime],
-      capacity: params[:event][:capacity],
-      category: params[:event][:category],
-      organizer: params[:event][:organizer],
-      thumbnail_url: params[:event][:thumbnail_url],
-      is_public: params[:event][:is_public]
-    )
-      redirect_to @event, notice: "イベントを更新しました"
+    @event = Event.find_by(id: params[:id])
+    if @event && (@event.creator_id == current_user.id || current_user.admin?)
+      if @event.update(event_params)
+        redirect_to @event, notice: "イベントを更新しました"
+      else
+        render :edit
+      end
     else
-      render :edit, status: :unprocessable_entity
+      redirect_to events_path, alert: "編集権限がありません"
     end
   end
 
   def destroy
-    @event = Event.find(params[:id])
-    @event.destroy
-    redirect_to events_path, notice: "イベントを削除しました"
+    @event = Event.find_by(id: params[:id])
+    if @event && (@event.creator_id == current_user.id || current_user.admin?)
+      @event.destroy
+      redirect_to events_path, notice: "イベントを削除しました"
+    else
+      redirect_to events_path, alert: "削除権限がありません"
+    end
   end
 
+  def event_params
+    params.require(:event).permit(
+      :title, :description, :location,
+      :start_datetime, :end_datetime,
+      :capacity, :category, :organizer,
+      :thumbnail_url, :is_public
+    )
+  end
 end
