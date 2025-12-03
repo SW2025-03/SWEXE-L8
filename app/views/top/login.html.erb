@@ -2,8 +2,8 @@
 
 <%= form_with url: login_path, local: true do |f| %>
   <p>
-    メールアドレス<br>
-    <%= f.email_field :email %>
+    ユーザー名<br>
+    <%= f.text_field :name %>
   </p>
 
   <p>

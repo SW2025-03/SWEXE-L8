@@ -6,13 +6,13 @@ class TopController < ApplicationController
   end
   
   def create_session
-    user = User.find_by(email: params[:email])
-
+    user = User.find_by(name: params[:name])
+    
     if user&.authenticate(params[:password])
       session[:user_id] = user.id
-      redirect_to root_path, notice: "ログインしました"
+      redirect_to home_path, notice: "ログインしました"
     else
-      flash.now[:alert] = "メールアドレスかパスワードが違います"
+      flash.now[:alert] = "名前またはパスワードが間違っています"
       render :login, status: :unprocessable_entity
     end
   end

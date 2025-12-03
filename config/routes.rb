@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   get    "login",  to: "top#login"
   post   "login",  to: "top#create_session"
   delete "logout", to: "top#logout"
+  get "home", to: "home#index"
   
   resources :users, only: [:new, :create]
   
