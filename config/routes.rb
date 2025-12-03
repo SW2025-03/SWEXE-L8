@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
-  resources :users
+  get    "login",  to: "top#login"
+  post   "login",  to: "top#create_session"
+  delete "logout", to: "top#logout"
+  
+  resources :users, only: [:new, :create]
+  
   root "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

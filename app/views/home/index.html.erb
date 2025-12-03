@@ -1,2 +1,10 @@
 <h1>UniMete</h1>
-<%= link_to "新規ユーザー登録", new_user_path, class: "btn btn-primary" %>
+<h2>イベント一覧</h2>
+
+<% if logged_in? %>
+  <%= button_to "ログアウト", logout_path, method: :delete %>
+<% else %>
+  <%= link_to "ログイン", login_path, class: "btn btn-success" %>
+  <%= link_to "新規ユーザー登録", new_user_path, class: "btn btn-primary" %>
+<% end %>
+
