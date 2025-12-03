@@ -1,12 +1,8 @@
 class Event < ApplicationRecord
-  belongs_to :creator, class_name: 'User', optional: true
+  belongs_to :creator, class_name: "User"
   has_many :participations, dependent: :destroy
   has_many :users, through: :participations
 
-  validates :title, presence: true
-
-  def spots_left
-    return nil if capacity.nil?
-    capacity - participations.where(status: [0,1]).count
-  end
+  validates :title, :location, :start_datetime, :end_datetime, presence: true
+  validates :capacity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 end

@@ -1,0 +1,26 @@
+<h1>ユーザー情報</h1>
+
+<p>
+  <strong>名前:</strong>
+  <%= @user.name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @user.email %>
+</p>
+
+<p>
+  <strong>役割:</strong>
+  <%= @user.role %>
+</p>
+
+<p>
+  <strong>登録日:</strong>
+  <%= @user.created_at.strftime("%Y/%m/%d %H:%M") %>
+</p>
+
+<hr>
+
+<%= link_to '編集する', edit_user_path(@user), class: 'btn btn-primary' %> |
+<%= link_to '戻る', root_path, class: 'btn btn-secondary' %>

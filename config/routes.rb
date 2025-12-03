@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
-  get "sessions/new"
-  root 'events#index'
-
   resources :users
-  resources :events do
-    resources :participations
-    get 'export_csv', on: :collection
-  end
+  resources :events
+  resources :participations
 
-  resource :session
+  # ログイン・ログアウト
+  get    'login',  to: 'sessions#new'
+  post   'login',  to: 'sessions#create'
+  delete 'logout', to: 'sessions#destroy'
+
+  root "events#index"
+
 end

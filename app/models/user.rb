@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
-  enum role: { student: 0, admin: 1 }
+
+
 
   has_many :events, foreign_key: 'creator_id', dependent: :destroy
   has_many :participations, dependent: :destroy
@@ -8,4 +9,7 @@ class User < ApplicationRecord
 
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true
+
+  validates :password, presence: true, length: { minimum: 6 }
 end
+
