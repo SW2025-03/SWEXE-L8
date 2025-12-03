@@ -7,6 +7,6 @@ class CreateParticipations < ActiveRecord::Migration[8.0]
       t.text :comment
       t.timestamps
     end
-    add_index :participations, [:user_id, :event_id], unique: true
+    add_index :participations, [ :user_id, :event_id ], unique: true
   end
 end

@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   def index
     @events = Event.where(is_public: true)
-    
+
     if params[:keyword].present?
       @events = @events.where("title LIKE ? OR description LIKE ?", "%#{params[:keyword]}%", "%#{params[:keyword]}%")
     end

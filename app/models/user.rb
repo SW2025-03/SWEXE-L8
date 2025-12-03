@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
 
 
-  has_many :events, foreign_key: 'creator_id', dependent: :destroy
+  has_many :events, foreign_key: "creator_id", dependent: :destroy
   has_many :participations, dependent: :destroy
   has_many :participated_events, through: :participations, source: :event
 
@@ -12,4 +12,3 @@ class User < ApplicationRecord
 
   validates :password, presence: true, length: { minimum: 6 }
 end
-
