@@ -17,30 +17,29 @@
 <% if logged_in? %>
   <% participation = Participation.find_by(user_id: current_user.id, event_id: @event.id) %>
   
-    <% if participation.nil? %>
-      <!-- まだ参加してない -->
-      <%= button_to "参加希望を送る", participations_path(event_id: @event.id), method: :post %>
-  
-    <% elsif participation.favorite? %>
-      <p>ステータス：参加希望</p>
-      <%= button_to "参加キャンセル", participation_path(participation, event_id: @event.id), method: :delete %>
-  
-    <% elsif participation.confirmed? %>
-      <p>ステータス：確定</p>
-      <%= button_to "キャンセルする", participation_path(participation, status: :canceled), method: :patch %>
-  
-    <% elsif participation.canceled? %>
-      <p>ステータス：キャンセル済み</p>
-      <%= button_to "再登録（参加希望）", participation_path(participation, status: :favorite), method: :patch %>
+  <% if participation.nil? %>
+    <%= button_to "参加希望を送る", participations_path(event_id: @event.id), method: :post %>
+
+  <% elsif participation.favorite? %>
+    <p>ステータス：参加希望</p>
+    <%= button_to "参加キャンセル", participation_path(participation, event_id: @event.id), method: :delete %>
+
+  <% elsif participation.confirmed? %>
+    <p>ステータス：確定</p>
+    <%= button_to "キャンセルする", participation_path(participation, status: :canceled), method: :patch %>
+
+  <% elsif participation.canceled? %>
+    <p>ステータス：キャンセル済み</p>
+    <%= button_to "再登録（参加希望）", participation_path(participation, status: :favorite), method: :patch %>
   <% end %>
 
   <% if @event.creator_id == current_user.id || current_user.admin? %>
     <p>
       <%= link_to "編集", edit_event_path(@event) %> |
-      <%= link_to "削除", @event, method: :delete, data: { confirm: "本当に削除しますか？" } %>
+      <%= link_to "削除", event_path(@event),
+            data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
     </p>
   <% end %>
 <% end %>
-
 
 <p><%= link_to "一覧に戻る", events_path %></p>

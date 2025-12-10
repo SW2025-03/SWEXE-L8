@@ -4,8 +4,9 @@
   <title>UniMete</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
+
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-  <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>   
 </head>
 <body>
   <header>
@@ -20,6 +21,7 @@
         <%= link_to "ログイン", login_path %>
       <% end %>
     </nav>
+
     <% if notice %><p style="color:green;"><%= notice %></p><% end %>
     <% if alert %><p style="color:red;"><%= alert %></p><% end %>
   </header>

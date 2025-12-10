@@ -3,10 +3,9 @@ Rails.application.routes.draw do
   resources :events
   resources :participations
 
-  # ログイン・ログアウト
   get    "login",  to: "sessions#new"
   post   "login",  to: "sessions#create"
-  delete "logout", to: "sessions#destroy"
+  match  "logout", to: "sessions#destroy", via: [:delete, :get]
 
   root "events#index"
 end
