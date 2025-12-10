@@ -1,5 +1,9 @@
 class User < ApplicationRecord
   has_secure_password
+  
+  def admin?
+    role == "admin"
+  end
 
   has_many :events, foreign_key: "creator_id", dependent: :destroy
   has_many :participations, dependent: :destroy
