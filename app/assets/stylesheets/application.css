@@ -1,4 +1,23 @@
-/*
+.site-header {
+  background-color: #2f9e44;
+  color: white;
+}
+
+.search-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 30px;
+  font-size: 18px;
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+.search-button:hover {
+  background-color: #2563eb;
+}/*
  * This is a manifest file that'll be compiled into application.css.
  *
  * With Propshaft, assets are served efficiently without preprocessing steps. You can still include

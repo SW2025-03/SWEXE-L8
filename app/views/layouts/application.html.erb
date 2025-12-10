@@ -8,9 +8,9 @@
   <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
 </head>
 <body>
-  <header>
-    <h1><a href="<%= root_path %>">UniMete</a></h1>
-    <nav>
+  <header class="site-header">
+    <h1 style="text-align: center;"><a href="<%= root_path %>">UniMete</a></h1>
+    <nav style="text-align: center;">
       <% if logged_in? %>
         <span>こんにちは、<%= current_user.name %>さん</span>
         | <%= link_to "プロフィール", user_path(current_user) %>
