@@ -78,4 +78,16 @@ class EventsController < ApplicationController
       :thumbnail_url, :is_public
     )
   end
+  
+  def join
+  event = Event.find(params[:id])
+
+  if event.full?
+    redirect_to event_path(event), alert: "定員に達しています"
+    return
+  end
+
+  event.participations.create(user: current_user)
+  redirect_to event_path(event), notice: "参加しました"
+end
 end
