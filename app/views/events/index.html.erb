@@ -1,25 +1,27 @@
-<h1>イベント一覧</h1>
+<h1 style="text-align: center;">イベント一覧</h1>
 
 <!-- 検索フォーム -->
 <%= form_with url: events_path, method: :get, local: true do |f| %>
-  <p>
+  <p style="text-align: center;">
     <%= label_tag :keyword, "キーワード" %><br>
     <%= text_field_tag :keyword, params[:keyword] %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= label_tag :category, "カテゴリ" %><br>
     <%= select_tag :category,
         options_for_select(Event.distinct.pluck(:category).compact, params[:category]),
         include_blank: "指定なし" %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= label_tag :start_date, "開始日（以降）" %><br>
     <%= date_field_tag :start_date, params[:start_date] %>
   </p>
 
-  <%= submit_tag "検索" %>
+  <p style="text-align: center;">
+    <%= submit_tag "検索",class: "search-button"%>
+  </p>
 <% end %>
 
 <hr>
