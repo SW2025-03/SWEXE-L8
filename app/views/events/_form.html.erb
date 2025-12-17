@@ -1,53 +1,55 @@
 <%= form_with model: event, local: true do |f| %>
-  <p>
+  <p style="text-align: center;">
     <%= f.label :title, "タイトル" %><br>
     <%= f.text_field :title %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :description, "説明" %><br>
     <%= f.text_area :description %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :location, "場所" %><br>
     <%= f.text_field :location %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :start_datetime, "開始日時" %><br>
     <%= f.datetime_select :start_datetime %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :end_datetime, "終了日時" %><br>
     <%= f.datetime_select :end_datetime %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :capacity, "定員" %><br>
     <%= f.number_field :capacity %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :category, "カテゴリ" %><br>
     <%= f.text_field :category %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :organizer, "主催者" %><br>
     <%= f.text_field :organizer %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :thumbnail_url, "サムネイルURL" %><br>
     <%= f.text_field :thumbnail_url %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :is_public, "公開状態" %><br>
     <%= f.check_box :is_public %> 公開する
   </p>
 
-  <%= f.submit %>
+  <p style="text-align: center;">
+    <%= f.submit class: "search-button"%>
+  </p>
 <% end %>
