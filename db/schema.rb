@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_12_083001) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_17_065939) do
   create_table "events", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -30,7 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_12_083001) do
   create_table "participations", force: :cascade do |t|
     t.integer "user_id"
     t.integer "event_id"
-    t.integer "status"
+    t.string "status"
     t.text "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -6,7 +6,13 @@
 <p><strong>開始：</strong><%= @event.start_datetime.strftime("%Y-%m-%d %H:%M") %></p>
 <p><strong>終了：</strong><%= @event.end_datetime.strftime("%Y-%m-%d %H:%M") %></p>
 
-<p><strong>定員：</strong><%= @event.capacity %> 名</p>
+<% wish_count = Participation.where(event_id: @event.id, status: "favorite").count %>
+
+<p>
+  <strong>定員：</strong>
+  <%= wish_count %> / <%= @event.capacity %> 名
+</p>
+
 <p><strong>カテゴリ：</strong><%= @event.category %></p>
 <p><strong>主催者：</strong><%= @event.organizer %></p>
 
@@ -14,32 +20,58 @@
   <p><img src="<%= @event.thumbnail_url %>" width="300"></p>
 <% end %>
 
-<% if logged_in? %>
-  <% participation = Participation.find_by(user_id: current_user.id, event_id: @event.id) %>
-  
-  <% if participation.nil? %>
-    <%= button_to "参加希望を送る", participations_path(event_id: @event.id), method: :post %>
+<hr>
 
-  <% elsif participation.favorite? %>
-    <p>ステータス：参加希望</p>
-    <%= button_to "参加キャンセル", participation_path(participation, event_id: @event.id), method: :delete %>
+<% participation =
+     current_user &&
+     Participation.find_by(user_id: current_user.id, event_id: @event.id)
+%>
 
-  <% elsif participation.confirmed? %>
-    <p>ステータス：確定</p>
-    <%= button_to "キャンセルする", participation_path(participation, status: :canceled), method: :patch %>
+<% if participation.nil? %>
 
-  <% elsif participation.canceled? %>
-    <p>ステータス：キャンセル済み</p>
-    <%= button_to "再登録（参加希望）", participation_path(participation, status: :favorite), method: :patch %>
-  <% end %>
-
-  <% if @event.creator_id == current_user.id || current_user.admin? %>
-    <p>
-      <%= link_to "編集", edit_event_path(@event) %> |
-      <%= link_to "削除", event_path(@event),
-            data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
+  <% if wish_count < @event.capacity %>
+    <%= button_to "参加希望を送る",
+          participations_path(event_id: @event.id),
+          method: :post %>
+  <% else %>
+    <p style="color: red; font-weight: bold;">
+      ※ 定員に達しました
     </p>
   <% end %>
+
+<% elsif participation.status == "favorite" %>
+
+  <p><strong>ステータス：</strong>参加希望</p>
+  <%= button_to "参加キャンセル",
+        participation_path(participation),
+        method: :delete %>
+
+<% elsif participation.status == "confirmed" %>
+
+  <p><strong>ステータス：</strong>確定</p>
+
+<% elsif participation.status == "canceled" %>
+
+  <p><strong>ステータス：</strong>キャンセル済み</p>
+
+  <% if wish_count < @event.capacity %>
+    <%= button_to "再登録（参加希望）",
+          participation_path(participation, status: "favorite"),
+          method: :patch %>
+  <% else %>
+    <p style="color: red;">※ 定員オーバーのため再登録できません</p>
+  <% end %>
+
+<% end %>
+
+<hr>
+
+<% if logged_in? && (@event.creator_id == current_user.id || current_user.admin?) %>
+  <p>
+    <%= link_to "編集", edit_event_path(@event) %> |
+    <%= link_to "削除", event_path(@event),
+          data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
+  </p>
 <% end %>
 
 <p><%= link_to "一覧に戻る", events_path %></p>
