@@ -74,4 +74,42 @@
   </p>
 <% end %>
 
+<% if logged_in? && (@event.creator_id == current_user.id || current_user.admin?) %>
+
+  <hr>
+  <h2>参加希望者一覧</h2>
+
+  <% participants = Participation
+        .includes(:user)
+        .where(event_id: @event.id, status: "favorite")
+  %>
+
+  <% if participants.any? %>
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>#</th>
+        <th>名前</th>
+        <th>Email</th>
+        <th>登録日時</th>
+      </tr>
+
+      <% participants.each_with_index do |p, index| %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= p.user.name %></td>
+          <td><%= p.user.email %></td>
+          <td><%= p.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <p>現在、参加希望者はいません。</p>
+  <% end %>
+
+<% end %>
+
+
+
+
+
 <p><%= link_to "一覧に戻る", events_path %></p>
