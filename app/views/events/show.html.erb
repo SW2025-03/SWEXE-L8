@@ -1,14 +1,14 @@
-<h1><%= @event.title %></h1>
+<h1 style="text-align: center;"><%= @event.title %></h1>
 
-<p><strong>説明：</strong><br><%= simple_format(@event.description) %></p>
+<p style="text-align: center;"><strong>説明：</strong><br><%= simple_format(@event.description) %></p>
 
-<p><strong>場所：</strong><%= @event.location %></p>
-<p><strong>開始：</strong><%= @event.start_datetime.strftime("%Y-%m-%d %H:%M") %></p>
-<p><strong>終了：</strong><%= @event.end_datetime.strftime("%Y-%m-%d %H:%M") %></p>
+<p style="text-align: center;"><strong>場所：</strong><%= @event.location %></p>
+<p style="text-align: center;"><strong>開始：</strong><%= @event.start_datetime.strftime("%Y-%m-%d %H:%M") %></p>
+<p style="text-align: center;"><strong>終了：</strong><%= @event.end_datetime.strftime("%Y-%m-%d %H:%M") %></p>
 
-<p><strong>定員：</strong><%= @event.capacity %> 名</p>
-<p><strong>カテゴリ：</strong><%= @event.category %></p>
-<p><strong>主催者：</strong><%= @event.organizer %></p>
+<p style="text-align: center;"><strong>定員：</strong><%= @event.capacity %> 名</p>
+<p style="text-align: center;"><strong>カテゴリ：</strong><%= @event.category %></p>
+<p style="text-align: center;"><strong>主催者：</strong><%= @event.organizer %></p>
 
 <% if @event.thumbnail_url.present? %>
   <p><img src="<%= @event.thumbnail_url %>" width="300"></p>
@@ -19,23 +19,31 @@
   
     <% if participation.nil? %>
       <!-- まだ参加してない -->
-      <%= button_to "参加希望を送る", participations_path(event_id: @event.id), method: :post %>
+      <div style="text-align: center;">
+        <%= button_to "参加希望を送る",participations_path(event_id: @event.id),method: :post,form: { class: "center-form" } %>
+      </div>
   
     <% elsif participation.favorite? %>
-      <p>ステータス：参加希望</p>
-      <%= button_to "参加キャンセル", participation_path(participation, event_id: @event.id), method: :delete %>
+      <p style="text-align: center;">ステータス：参加希望</p>
+      <div style="text-align: center;">
+        <%= button_to "参加キャンセル", participation_path(participation, event_id: @event.id), method: :delete,form: { class: "center-form" } %>
+      </dev>
   
     <% elsif participation.confirmed? %>
-      <p>ステータス：確定</p>
-      <%= button_to "キャンセルする", participation_path(participation, status: :canceled), method: :patch %>
+      <p style="text-align: center;">ステータス：確定</p>
+      <div style="text-align: center;">
+        <%= button_to "キャンセルする", participation_path(participation, status: :canceled), method: :patch,form: { class: "center-form" } %>
+      </dev>
   
     <% elsif participation.canceled? %>
-      <p>ステータス：キャンセル済み</p>
-      <%= button_to "再登録（参加希望）", participation_path(participation, status: :favorite), method: :patch %>
+      <p style="text-align: center;">ステータス：キャンセル済み</p>
+      <div style="text-align: center;">
+        <%= button_to "再登録（参加希望）", participation_path(participation, status: :favorite), method: :patch,form: { class: "center-form" } %>
+      </div>
   <% end %>
 
   <% if @event.creator_id == current_user.id || current_user.admin? %>
-    <p>
+    <p style="text-align: center;">
       <%= link_to "編集", edit_event_path(@event) %> |
       <%= link_to "削除", @event, method: :delete, data: { confirm: "本当に削除しますか？" } %>
     </p>
@@ -43,4 +51,4 @@
 <% end %>
 
 
-<p><%= link_to "一覧に戻る", events_path %></p>
+<p style="text-align: center;"><%= link_to "一覧に戻る", events_path %></p>
