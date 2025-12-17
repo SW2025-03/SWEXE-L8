@@ -1,4 +1,4 @@
-<h1>新規登録</h1>
+<h1 style="text-align: center;">新規登録</h1>
 
 <% if @user.errors.any? %>
   <div style="color: red;">
@@ -13,30 +13,37 @@
 
 <%= form_with model: @user, local: true do |f| %>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :name, "名前" %><br>
     <%= f.text_field :name %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :email, "メールアドレス" %><br>
     <%= f.email_field :email %>
   </p>
 
+<<<<<<< HEAD
   <p>
     <%= f.label :password, "パスワード 6文字以上" %><br>
+=======
+  <p style="text-align: center;">
+    <%= f.label :password, "パスワード" %><br>
+>>>>>>> Y3
     <%= f.password_field :password %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :password_confirmation, "パスワード確認" %><br>
     <%= f.password_field :password_confirmation %>
   </p>
 
-  <%= f.submit "登録" %>
+  <p style="text-align: center;">
+    <%= f.submit "登録" ,class: "search-button"%>
+  </p>
 
 <% end %>
 
-<p>
+<p style="text-align: center;">
   <%= link_to "ログインへ戻る", login_path %>
 </p>
