@@ -1,12 +1,5 @@
 class User < ApplicationRecord
   has_secure_password
-<<<<<<< HEAD
-  
-  def admin?
-    role == "admin"
-  end
-=======
->>>>>>> Y3
 
   has_many :events, foreign_key: "creator_id", dependent: :destroy
   has_many :participations, dependent: :destroy
