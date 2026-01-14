@@ -1,27 +1,31 @@
-<h1>ユーザー情報編集</h1>
+<h1 style="text-align: center;">ユーザー情報編集</h1>
 
 <%= form_with model: @user, local: true do |f| %>
-  <p>
+  <p style="text-align: center;">
     <%= f.label :name, "名前" %><br>
     <%= f.text_field :name %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :email, "Email" %><br>
     <%= f.email_field :email %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :password, "新しいパスワード" %><br>
     <%= f.password_field :password %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= f.label :password_confirmation, "確認用パスワード" %><br>
     <%= f.password_field :password_confirmation %>
   </p>
 
-  <%= f.submit "更新する" %>
+  <p style="text-align: center;">
+    <%= f.submit "更新する" %>
+  </p>
 <% end %>
 
-<%= link_to "戻る", user_path(@user) %>
+<p style="text-align: center;">
+  <%= link_to "戻る", user_path(@user) %>
+</p>

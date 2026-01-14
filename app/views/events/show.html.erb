@@ -1,117 +1,78 @@
 <h1 style="text-align: center;"><%= @event.title %></h1>
 
-<p style="text-align: center;"><strong>説明：</strong><br><%= simple_format(@event.description) %></p>
+<p style="text-align: center">
+  <strong>説明：</strong><br>
+  <%= simple_format(@event.description) %>
+</p>
 
-<p style="text-align: center;"><strong>場所：</strong><%= @event.location %></p>
-<p style="text-align: center;"><strong>開始：</strong><%= @event.start_datetime.strftime("%Y-%m-%d %H:%M") %></p>
-<p style="text-align: center;"><strong>終了：</strong><%= @event.end_datetime.strftime("%Y-%m-%d %H:%M") %></p>
-
-<p style="text-align: center;"><strong>定員：</strong><%= @event.capacity %> 名</p>
-<p style="text-align: center;"><strong>カテゴリ：</strong><%= @event.category %></p>
-<p style="text-align: center;"><strong>主催者：</strong><%= @event.organizer %></p>
+<p style="text-align: center"><strong>場所：</strong><%= @event.location %></p>
+<p style="text-align: center"><strong>開始：</strong><%= @event.start_datetime.strftime("%Y-%m-%d %H:%M") %></p>
+<p style="text-align: center"><strong>終了：</strong><%= @event.end_datetime.strftime("%Y-%m-%d %H:%M") %></p>
+<p style="text-align: center"><strong>定員：</strong><%= @event.capacity %> 名</p>
+<p style="text-align: center"><strong>カテゴリ：</strong><%= @event.category %></p>
+<p style="text-align: center"><strong>主催者：</strong><%= @event.organizer %></p>
 
 <% if @event.thumbnail_url.present? %>
-  <p><img src="<%= @event.thumbnail_url %>" width="300"></p>
+  <p style="text-align: center">
+    <img src="<%= @event.thumbnail_url %>" width="300">
+  </p>
 <% end %>
 
-<% if logged_in? %>
-  <% participation = Participation.find_by(user_id: current_user.id, event_id: @event.id) %>
-  
-    <% if participation.nil? %>
-      <!-- まだ参加してない -->
-      <div style="text-align: center;">
-        <%= button_to "参加希望を送る",participations_path(event_id: @event.id),method: :post,form: { class: "center-form" } %>
-      </div>
-  
-    <% elsif participation.favorite? %>
-      <p style="text-align: center;">ステータス：参加希望</p>
-      <div style="text-align: center;">
-        <%= button_to "参加キャンセル", participation_path(participation, event_id: @event.id), method: :delete,form: { class: "center-form" } %>
-      </dev>
-  
-    <% elsif participation.confirmed? %>
-      <p style="text-align: center;">ステータス：確定</p>
-      <div style="text-align: center;">
-        <%= button_to "キャンセルする", participation_path(participation, status: :canceled), method: :patch,form: { class: "center-form" } %>
-      </dev>
-  
-    <% elsif participation.canceled? %>
-      <p style="text-align: center;">ステータス：キャンセル済み</p>
-      <div style="text-align: center;">
-        <%= button_to "再登録（参加希望）", participation_path(participation, status: :favorite), method: :patch,form: { class: "center-form" } %>
-      </div>
-  <% end %>
-
-  <% if @event.creator_id == current_user.id || current_user.admin? %>
-    <p style="text-align: center;">
-      <%= link_to "編集", edit_event_path(@event) %> |
-      <%= link_to "削除", event_path(@event),
-            data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
 <hr>
 
-<% participation =
-     current_user &&
-     Participation.find_by(user_id: current_user.id, event_id: @event.id)
-%>
+<% if logged_in? %>
+  <% participation = Participation.find_by(
+        user_id: current_user.id,
+        event_id: @event.id
+      )
+  %>
 
-<% if participation.nil? %>
+  <% if participation.nil? %>
 
-  <% if wish_count < @event.capacity %>
-    <%= button_to "参加希望を送る",
-          participations_path(event_id: @event.id),
-          method: :post %>
-  <% else %>
-    <p style="color: red; font-weight: bold;">
-      ※ 定員に達しました
-    </p>
+    <div style="text-align: center">
+      <%= button_to "参加希望を送る",
+            participations_path(event_id: @event.id),
+            method: :post %>
+    </div>
+
+  <% elsif participation.status == "favorite" %>
+
+    <p style="text-align: center"><strong>ステータス：</strong>参加希望</p>
+    <div style="text-align: center">
+      <%= button_to "参加キャンセル",
+            participation_path(participation),
+            method: :delete %>
+    </div>
+
+  <% elsif participation.status == "confirmed" %>
+
+    <p style="text-align: center"><strong>ステータス：</strong>確定</p>
+
+  <% elsif participation.status == "canceled" %>
+
+    <p style="text-align: center"><strong>ステータス：</strong>キャンセル済み</p>
+    <div style="text-align: center">
+      <%= button_to "再登録（参加希望）",
+            participation_path(participation, status: "favorite"),
+            method: :patch %>
+    </div>
+
   <% end %>
-
-<% elsif participation.status == "favorite" %>
-
-  <p><strong>ステータス：</strong>参加希望</p>
-  <%= button_to "参加キャンセル",
-        participation_path(participation),
-        method: :delete %>
-
-<% elsif participation.status == "confirmed" %>
-
-  <p><strong>ステータス：</strong>確定</p>
-
-<% elsif participation.status == "canceled" %>
-
-  <p><strong>ステータス：</strong>キャンセル済み</p>
-
-  <% if wish_count < @event.capacity %>
-    <%= button_to "再登録（参加希望）",
-          participation_path(participation, status: "favorite"),
-          method: :patch %>
-  <% else %>
-    <p style="color: red;">※ 定員オーバーのため再登録できません</p>
-  <% end %>
-
 <% end %>
 
 <hr>
 
 <% if logged_in? && (@event.creator_id == current_user.id || current_user.admin?) %>
-  <p>
+  <p style="text-align: center">
     <%= link_to "編集", edit_event_path(@event) %> |
     <%= link_to "削除", event_path(@event),
           data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
   </p>
-<% end %>
-
-<% if logged_in? && (@event.creator_id == current_user.id || current_user.admin?) %>
 
   <hr>
-  <h2>参加希望者一覧</h2>
+  <h2>参加希望者一覧（<%= @favorite_count %> 人）</h2>
 
-  <% participants = Participation
-        .includes(:user)
-        .where(event_id: @event.id, status: "favorite")
-  %>
-
-  <% if participants.any? %>
+  <% if @participations.any? %>
     <table border="1" cellpadding="6">
       <tr>
         <th>#</th>
@@ -120,9 +81,9 @@
         <th>登録日時</th>
       </tr>
 
-      <% participants.each_with_index do |p, index| %>
+      <% @participations.each_with_index do |p, i| %>
         <tr>
-          <td><%= index + 1 %></td>
+          <td><%= i + 1 %></td>
           <td><%= p.user.name %></td>
           <td><%= p.user.email %></td>
           <td><%= p.created_at.strftime("%Y-%m-%d %H:%M") %></td>
@@ -132,11 +93,10 @@
   <% else %>
     <p>現在、参加希望者はいません。</p>
   <% end %>
-
 <% end %>
 
+<hr>
 
-
-
-
-<p><%= link_to "一覧に戻る", events_path %></p>
+<p style="text-align: center">
+  <%= link_to "一覧に戻る", events_path %>
+</p>
