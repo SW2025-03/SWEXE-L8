@@ -47,9 +47,96 @@
       <%= link_to "編集", edit_event_path(@event) %> |
       <%= link_to "削除", event_path(@event),
             data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
+<hr>
+
+<% participation =
+     current_user &&
+     Participation.find_by(user_id: current_user.id, event_id: @event.id)
+%>
+
+<% if participation.nil? %>
+
+  <% if wish_count < @event.capacity %>
+    <%= button_to "参加希望を送る",
+          participations_path(event_id: @event.id),
+          method: :post %>
+  <% else %>
+    <p style="color: red; font-weight: bold;">
+      ※ 定員に達しました
     </p>
   <% end %>
+
+<% elsif participation.status == "favorite" %>
+
+  <p><strong>ステータス：</strong>参加希望</p>
+  <%= button_to "参加キャンセル",
+        participation_path(participation),
+        method: :delete %>
+
+<% elsif participation.status == "confirmed" %>
+
+  <p><strong>ステータス：</strong>確定</p>
+
+<% elsif participation.status == "canceled" %>
+
+  <p><strong>ステータス：</strong>キャンセル済み</p>
+
+  <% if wish_count < @event.capacity %>
+    <%= button_to "再登録（参加希望）",
+          participation_path(participation, status: "favorite"),
+          method: :patch %>
+  <% else %>
+    <p style="color: red;">※ 定員オーバーのため再登録できません</p>
+  <% end %>
+
+<% end %>
+
+<hr>
+
+<% if logged_in? && (@event.creator_id == current_user.id || current_user.admin?) %>
+  <p>
+    <%= link_to "編集", edit_event_path(@event) %> |
+    <%= link_to "削除", event_path(@event),
+          data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
+  </p>
+<% end %>
+
+<% if logged_in? && (@event.creator_id == current_user.id || current_user.admin?) %>
+
+  <hr>
+  <h2>参加希望者一覧</h2>
+
+  <% participants = Participation
+        .includes(:user)
+        .where(event_id: @event.id, status: "favorite")
+  %>
+
+  <% if participants.any? %>
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>#</th>
+        <th>名前</th>
+        <th>Email</th>
+        <th>登録日時</th>
+      </tr>
+
+      <% participants.each_with_index do |p, index| %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= p.user.name %></td>
+          <td><%= p.user.email %></td>
+          <td><%= p.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <p>現在、参加希望者はいません。</p>
+  <% end %>
+
 <% end %>
 
 
-<p style="text-align: center;"><%= link_to "一覧に戻る", events_path %></p>
+
+
+
+<p><%= link_to "一覧に戻る", events_path %></p>

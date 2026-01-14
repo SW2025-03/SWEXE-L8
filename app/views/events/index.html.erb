@@ -1,6 +1,5 @@
 <h1 style="text-align: center;">イベント一覧</h1>
 
-<!-- 検索フォーム -->
 <%= form_with url: events_path, method: :get, local: true do |f| %>
   <p style="text-align: center;">
     <%= label_tag :keyword, "キーワード" %><br>
@@ -26,7 +25,6 @@
 
 <hr>
 
-<!-- ログインユーザーのみ表示 -->
 <% if logged_in? %>
   <p><%= link_to "新しいイベントを作成", new_event_path %></p>
 <% end %>
@@ -49,7 +47,6 @@
   <% end %>
 </table>
 
-<!-- イベントがない場合 -->
 <% if @events.empty? %>
   <p>表示できるイベントはありません。</p>
 <% end %>

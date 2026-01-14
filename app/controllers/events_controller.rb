@@ -22,6 +22,15 @@ class EventsController < ApplicationController
     @event = Event.find_by(id: params[:id])
     unless @event
       redirect_to events_path, alert: "指定されたイベントが見つかりません"
+      return
+    end
+  
+    if logged_in? && (@event.creator_id == current_user.id || current_user.admin?)
+      @participations = Participation
+        .includes(:user)
+        .where(event_id: @event.id, status: "favorite")
+  
+      @favorite_count = @participations.count
     end
   end
 
