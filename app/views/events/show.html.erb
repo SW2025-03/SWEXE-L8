@@ -1,9 +1,9 @@
 <h1 style="text-align: center;"><%= @event.title %></h1>
 
-<p style="text-align: center">
+<div style="text-align: center">
   <strong>説明：</strong><br>
-  <%= simple_format(@event.description) %>
-</p>
+   <%= simple_format(@event.description) %>
+</div>
 
 <p style="text-align: center"><strong>場所：</strong><%= @event.location %></p>
 <p style="text-align: center"><strong>開始：</strong><%= @event.start_datetime.strftime("%Y-%m-%d %H:%M") %></p>
