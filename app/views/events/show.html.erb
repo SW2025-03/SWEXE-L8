@@ -100,3 +100,10 @@
 <p style="text-align: center">
   <%= link_to "一覧に戻る", events_path %>
 </p>
+
+<% if logged_in? %>
+  <p style="text-align: center; margin-top: 24px;">
+    <%= link_to "＋ 新しいイベントを作成", new_event_path, class: "new-event-link" %>
+  </p>
+<% end %>
+
