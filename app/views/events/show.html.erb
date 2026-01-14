@@ -2,7 +2,7 @@
 
 <div style="text-align: center">
   <strong>説明：</strong><br>
-   <%= simple_format(@event.description) %>
+  <%= simple_format(@event.description) %>
 </div>
 
 <p style="text-align: center"><strong>場所：</strong><%= @event.location %></p>
@@ -21,42 +21,31 @@
 <hr>
 
 <% if logged_in? %>
-  <% participation = Participation.find_by(
-        user_id: current_user.id,
-        event_id: @event.id
-      )
-  %>
-
-  <% if participation.nil? %>
-
+  <% if @participation.nil? %>
     <div style="text-align: center">
       <%= button_to "参加希望を送る",
             participations_path(event_id: @event.id),
             method: :post %>
     </div>
 
-  <% elsif participation.status == "favorite" %>
-
+  <% elsif @participation.status == "favorite" %>
     <p style="text-align: center"><strong>ステータス：</strong>参加希望</p>
     <div style="text-align: center">
       <%= button_to "参加キャンセル",
-            participation_path(participation),
+            participation_path(@participation),
             method: :delete %>
     </div>
 
-  <% elsif participation.status == "confirmed" %>
-
+  <% elsif @participation.status == "confirmed" %>
     <p style="text-align: center"><strong>ステータス：</strong>確定</p>
 
-  <% elsif participation.status == "canceled" %>
-
+  <% elsif @participation.status == "canceled" %>
     <p style="text-align: center"><strong>ステータス：</strong>キャンセル済み</p>
     <div style="text-align: center">
       <%= button_to "再登録（参加希望）",
-            participation_path(participation, status: "favorite"),
+            participation_path(@participation, status: "favorite"),
             method: :patch %>
     </div>
-
   <% end %>
 <% end %>
 
@@ -101,9 +90,6 @@
   <%= link_to "一覧に戻る", events_path %>
 </p>
 
-  <p style="text-align: center; margin-top: 24px;">
-    <%= link_to "＋ 新しいイベントを作成", new_event_path, class: "new-event-link" %>
-  </p>
-<% end %>
-
-
+<p style="text-align: center; margin-top: 24px;">
+  <%= link_to "＋ 新しいイベントを作成", new_event_path, class: "new-event-link" %>
+</p>
