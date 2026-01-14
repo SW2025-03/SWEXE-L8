@@ -1,0 +1,15 @@
+app/assets/stylesheets/application.css
+app/controllers/events_controller.rb
+app/models/event.rb
+app/models/user.rb
+app/views/events/_form.html.erb
+app/views/events/edit.html.erb
+app/views/events/index.html.erb
+app/views/events/new.html.erb
+app/views/events/show.html.erb
+app/views/layouts/application.html.erb
+app/views/participations/show.html.erb
+app/views/sessions/new.html.erb
+app/views/users/edit.html.erb
+app/views/users/new.html.erb
+app/views/users/show.html.erb
