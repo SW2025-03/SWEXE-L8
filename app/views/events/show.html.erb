@@ -21,30 +21,35 @@
 <hr>
 
 <% if logged_in? %>
+  <%# 現在の参加者数（favorite と confirmed を参加としてカウント） %>
+  <% total_participants = @event.participations.where(status: ["favorite", "confirmed"]).count %>
+
   <% if @participation.nil? %>
-    <div style="text-align: center">
-      <%= button_to "参加希望を送る",
-            participations_path(event_id: @event.id),
-            method: :post %>
-    </div>
+    <% if total_participants < @event.capacity %>
+      <!-- まだ参加していない & 定員に空きあり -->
+      <div style="text-align: center">
+        <%= button_to "参加希望を送る", participations_path(event_id: @event.id), method: :post %>
+      </div>
+    <% else %>
+      <!-- まだ参加していない & 定員いっぱい -->
+      <p style="text-align: center; color: red;"><strong>定員に達しました</strong></p>
+    <% end %>
 
-  <% elsif @participation.status == "favorite" %>
-    <p style="text-align: center"><strong>ステータス：</strong>参加希望</p>
+  <% elsif @participation.status.in?(["favorite", "confirmed"]) %>
+    <!-- 参加済み -->
+    <p style="text-align: center">
+      <strong>ステータス：</strong>
+      <%= @participation.status == "favorite" ? "参加希望" : "確定" %>
+    </p>
     <div style="text-align: center">
-      <%= button_to "参加キャンセル",
-            participation_path(@participation),
-            method: :delete %>
+      <%= button_to "キャンセル", participation_path(@participation), method: :delete, data: { turbo_confirm: "本当にキャンセルしますか？" } %>
     </div>
-
-  <% elsif @participation.status == "confirmed" %>
-    <p style="text-align: center"><strong>ステータス：</strong>確定</p>
 
   <% elsif @participation.status == "canceled" %>
-    <p style="text-align: center"><strong>ステータス：</strong>キャンセル済み</p>
+    <!-- キャンセル済み -->
+    <p style="text-align: center; color: gray;"><strong>ステータス：</strong>キャンセル済み</p>
     <div style="text-align: center">
-      <%= button_to "再登録（参加希望）",
-            participation_path(@participation, status: "favorite"),
-            method: :patch %>
+      <%= button_to "再登録（参加希望）", participation_path(@participation, status: "favorite"), method: :patch %>
     </div>
   <% end %>
 <% end %>
@@ -54,8 +59,7 @@
 <% if logged_in? && (@event.creator_id == current_user.id || current_user.admin?) %>
   <p style="text-align: center">
     <%= link_to "編集", edit_event_path(@event) %> |
-    <%= link_to "削除", event_path(@event),
-          data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
+    <%= link_to "削除", event_path(@event), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
   </p>
 
   <hr>
@@ -69,7 +73,6 @@
         <th>Email</th>
         <th>登録日時</th>
       </tr>
-
       <% @participations.each_with_index do |p, i| %>
         <tr>
           <td><%= i + 1 %></td>

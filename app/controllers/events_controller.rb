@@ -24,13 +24,16 @@ class EventsController < ApplicationController
       redirect_to events_path, alert: "指定されたイベントが見つかりません"
       return
     end
-  
-    if logged_in? && (@event.creator_id == current_user.id || current_user.admin?)
-      @participations = Participation
-        .includes(:user)
-        .where(event_id: @event.id, status: "favorite")
-  
-      @favorite_count = @participations.count
+
+    if logged_in?
+      @participation = Participation.find_by(user_id: current_user.id, event_id: @event.id)
+
+      if @event.creator_id == current_user.id || current_user.admin?
+        @participations = @event.participations
+                              .includes(:user)
+                              .where(status: ["favorite", "confirmed"])
+        @favorite_count = @participations.count
+      end
     end
   end
 
@@ -79,6 +82,8 @@ class EventsController < ApplicationController
     end
   end
 
+  private
+
   def event_params
     params.require(:event).permit(
       :title, :description, :location,
@@ -87,16 +92,4 @@ class EventsController < ApplicationController
       :thumbnail_url, :is_public
     )
   end
-  
-  def join
-  event = Event.find(params[:id])
-
-  if event.full?
-    redirect_to event_path(event), alert: "定員に達しています"
-    return
-  end
-
-  event.participations.create(user: current_user)
-  redirect_to event_path(event), notice: "参加しました"
-end
 end

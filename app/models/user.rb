@@ -10,4 +10,7 @@ class User < ApplicationRecord
 
   validates :password, presence: true, length: { minimum: 6 }, confirmation: true
   validates :password_confirmation, presence: true
+  def admin?
+    role == "admin"
+  end
 end
